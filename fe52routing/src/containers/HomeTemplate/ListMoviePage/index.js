@@ -1,47 +1,32 @@
 import React, { Component } from "react";
-import Axios from "axios";
 import Movie from "./../../../components/Movie";
+import {
+  // actListMovieRequest,
+  // actListMovieSuccess,
+  // actListMovieFailed,
+  actListMovieApi,
+} from "./module/action";
+import { connect } from "react-redux";
+import Loader from "../../../components/Loader";
 
-export default class ListMoviePage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      listMovie: [],
-      loading: false,
-    };
-  }
+class ListMoviePage extends Component {
   // Chạy sau render
   componentDidMount() {
-    this.setState({
-      loading: true,
-    });
-    Axios({
-      url:
-        "https://movie0706.cybersoft.edu.vn/api/QuanLyPhim/LayDanhSachPhim?maNhom=GP01",
-      method: "GET",
-    })
-      .then((result) => {
-        console.log(result.data);
-        this.setState({
-          listMovie: result.data,
-          loading: false,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    this.props.listMovieApi();
   }
 
   renderHTML = () => {
-    const { listMovie } = this.state;
-    return listMovie.map((movie, index) => {
-      return <Movie key={index} movie={movie} />;
-    });
+    const { listMovie } = this.props;
+    if (listMovie && listMovie.length > 0) {
+      return listMovie.map((movie, index) => {
+        return <Movie key={index} movie={movie} />;
+      });
+    }
   };
 
   render() {
-    const { loading } = this.state;
-    if (loading) return <div>Loading...</div>;
+    const { loading } = this.props;
+    if (loading) return <Loader />;
     return (
       <div className="container">
         <h1>ListMoviePage</h1>
@@ -50,3 +35,18 @@ export default class ListMoviePage extends Component {
     );
   }
 }
+const mapStateToProps = (state) => {
+  return {
+    loading: state.listMovieReducer.loading,
+    listMovie: state.listMovieReducer.data,
+    err: state.listMovieReducer.err,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    listMovieApi: () => {
+      dispatch(actListMovieApi());
+    },
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(ListMoviePage);
