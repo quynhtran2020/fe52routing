@@ -50,6 +50,15 @@ export default class NavbarHome extends Component {
                   ListMovie
                 </NavLink>
               </li>
+              <li className="nav-item">
+                <NavLink
+                  activeClassName="active"
+                  className="nav-link"
+                  to="/hoc"
+                >
+                  HOC
+                </NavLink>
+              </li>
             </ul>
           </div>
         </nav>
