@@ -5,23 +5,28 @@ import {
 } from "./constant";
 import Axios from "axios";
 
-export const actLoginApi = (data) => {
+export const actLoginApi = (data, history) => {
   return (dispatch) => {
     dispatch(actLoginRequest());
     Axios({
       url: `https://movie0706.cybersoft.edu.vn/api/QuanLyNguoiDung/DangNhap`,
       method: "POST",
-      data: data,
+      data,
     })
       .then((result) => {
         dispatch(actLoginSuccess(result.data));
+        if (result.data.maLoaiNguoiDung === "QuanTri") {
+          //Lưu trạng thái login
+          localStorage.setItem("UserAdmin", JSON.stringify(result.data));
+          //Chuyển đến trang dashboard
+          history.push("/dashboard");
+        } else {
+          alert("không có quyền truy cập");
+        }
         console.log(result.data);
-        // localStorage.setItem("TaiKhoan", JSON.stringify(result.data));
-        // alert("Success");
       })
       .catch((err) => {
         dispatch(actLoginFailed(err));
-        // alert("Failed");
       });
   };
 };

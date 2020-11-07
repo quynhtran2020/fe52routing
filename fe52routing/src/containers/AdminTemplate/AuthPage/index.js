@@ -19,16 +19,14 @@ class AuthPage extends Component {
   };
   handleLogin = (e) => {
     e.preventDefault();
-    this.props.dangNhap(this.state);
-    // if (this.props.data) {
-    //   console.log(this.props.data);
-    // }
+    this.props.dangNhap(this.state, this.props.history);
   };
-  // componentDidMount() {
-  //   if (this.props.data) {
-  //     console.log(this.props.data);
-  //   }
-  // }
+  renderNoti = () => {
+    const { err } = this.props;
+    if (err) {
+      return <div className="alert alert-danger">{err.response.data}</div>;
+    }
+  };
   render() {
     const { loading } = this.props;
     if (loading) return <Loader />;
@@ -37,11 +35,12 @@ class AuthPage extends Component {
         <div className="row">
           <div className="col-md-6 mx-auto">
             <h3>AuthPage</h3>
-            {!this.props.data ? (
+            {/* {!this.props.data ? (
               <div className="alert alert-danger">Tài khoản ko đúng</div>
             ) : (
               ""
-            )}
+            )} */}
+            {this.renderNoti()}
             <form onSubmit={this.handleLogin}>
               <div className="form-group">
                 <label>Username</label>
@@ -82,8 +81,8 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    dangNhap: (userData) => {
-      dispatch(actLoginApi(userData));
+    dangNhap: (userData, history) => {
+      dispatch(actLoginApi(userData, history));
     },
   };
 };

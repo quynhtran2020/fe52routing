@@ -1,5 +1,5 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import { Route, Redirect } from "react-router-dom";
 import NavbarAdmin from "./../../components/NavbarAdmin";
 
 function AdminLayout(props) {
@@ -16,11 +16,15 @@ export default function AdminTemplate({ Component, ...props }) {
     <Route
       {...props}
       render={(propsComponent) => {
-        return (
-          <AdminLayout>
-            <Component {...propsComponent} />
-          </AdminLayout>
-        );
+        // Xóa localStorage.removeItem("UserAdmin")
+        if (localStorage.getItem("UserAdmin")) {
+          return (
+            <AdminLayout>
+              <Component {...propsComponent} />
+            </AdminLayout>
+          );
+        }
+        return <Redirect to="/auth" />;
       }}
     />
   );
